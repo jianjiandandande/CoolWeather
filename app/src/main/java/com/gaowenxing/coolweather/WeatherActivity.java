@@ -88,7 +88,7 @@ public class WeatherActivity extends AppCompatActivity {
         drawerLayout=(DrawerLayout)this.findViewById(R.id.draw_layout);
         navButton=(Button)this.findViewById(R.id.nav_button);
         weatherLayout=(ScrollView)this.findViewById(R.id.weather_layout);
-        titleCity=(TextView)this.findViewById(R.id.title_text);
+        titleCity=(TextView)this.findViewById(R.id.title_city);
         titleUpdateTime=(TextView)this.findViewById(R.id.title_update_time);
         degreeText=(TextView)this.findViewById(R.id.degree_text);
         weatherInfoText=(TextView)this.findViewById(R.id.weather_info_text);
@@ -199,6 +199,7 @@ public class WeatherActivity extends AppCompatActivity {
         String updateTime=weather.basic.update.updateTime.split(" ")[1];
         String degree=weather.now.temperature+"℃";
         String weatherInfo=weather.now.more.info;
+        Log.i(TAG, "showWeatherInfo: "+cityName);
         titleCity.setText(cityName);
         titleUpdateTime.setText(updateTime);
         degreeText.setText(degree);
@@ -207,18 +208,18 @@ public class WeatherActivity extends AppCompatActivity {
         for(Forecast forecast: weather.forecastList){
             View view= LayoutInflater.from(this).inflate(R.layout.forecast_item,forecastLayout,false);
             TextView dateText=(TextView)view.findViewById(R.id.date_text);
-            TextView infoText=(TextView)view.findViewById(R.id.date_text);
-            TextView maxText=(TextView)view.findViewById(R.id.date_text);
-            TextView minText=(TextView)view.findViewById(R.id.date_text);
+            TextView infoText=(TextView)view.findViewById(R.id.info_text);
+            TextView min_max=(TextView)view.findViewById(R.id.min_max_text);
             dateText.setText(forecast.date);
             infoText.setText(forecast.more.info);
-            maxText.setText(forecast.temperature.max);
-            minText.setText(forecast.temperature.min);
+            min_max.setText(forecast.temperature.min+"℃~"+forecast.temperature.max+"℃");
             forecastLayout.addView(view);
         }
-        if(aqiText==null){
+        if(weather.aqi!=null){
             aqiText.setText(weather.aqi.city.aqi);
             pm25Text.setText(weather.aqi.city.pm25);
+        }else if(weather.aqi==null){
+            Toast.makeText(this, "部分数据获取失败！", Toast.LENGTH_SHORT).show();
         }
         comfortText.setText("舒适度："+weather.suggestion.comfort.info);
         carWashText.setText("洗车指数："+weather.suggestion.carWash.info);
